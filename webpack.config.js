@@ -1,14 +1,14 @@
-const DotenvWebpackPlugin = require('dotenv-webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const path = require('path')
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
+const DotenvWebpackPlugin = require('dotenv-webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const mode =
-  process.env.NODE_ENV === 'production' ? 'production' : 'development'
+  process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 module.exports = {
   entry: {
-    index: path.join(__dirname, 'src', 'index.js'),
+    index: path.join(__dirname, 'src', 'index.tsx'),
   },
   output: {
     publicPath: '/',
@@ -19,9 +19,18 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts  |tsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
+          },
+        },
       },
       {
         test: /\.scss$/,
@@ -34,6 +43,9 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'public', 'index.html'),
@@ -43,11 +55,11 @@ module.exports = {
   ],
   devServer: {
     index: path.join(__dirname, 'dist', 'index.html'),
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, 'public'),
     compress: true,
     port: 3000,
     historyApiFallback: {
       index: 'index.html',
     },
   },
-}
+};
